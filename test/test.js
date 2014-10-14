@@ -93,7 +93,7 @@ describe('Function',function(){
 describe('ObjectExpression',function(){
 	var basicTestStr,testNode
 	beforeEach(function(){
-		basicTestStr = require('fs').readFileSync('./test/ObjectExpression.js').toString()
+		basicTestStr = require('fs').readFileSync('./test/objectExpression.js').toString()
 		testNode = t.transfer(basicTestStr)
 	})
 
