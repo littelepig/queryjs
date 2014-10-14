@@ -33,7 +33,10 @@ function matchForStatement(jsNode, reg) {
 
 	var astNode = jsNode.astObj;
 	var oriBody = astNode.body;
-	astNode.body = {};
+	astNode.body = {
+        "type": "BlockStatement",
+        "body": []
+    };
 	var testString = escodegen.generate(astNode);
 	astNode.body = oriBody;
 
@@ -123,7 +126,7 @@ function walkAst(node, visitors, base, state) {
 			st.prevNode = jsNode;
 
 		}
-
+		
 		base[type](node, st, c);
 
 		if (!override) st.prevNode = jsNode.parentJsNode;
@@ -364,6 +367,7 @@ var methodFactory = (function(){
 		getParam: function(index) {
 			var curJsNode = this;
 			var params = curJsNode.astObj.params;
+			index = parseInt(index) || 0;
 
 			if (index > params.length - 1) return [];
 
@@ -381,7 +385,15 @@ var methodFactory = (function(){
             };
 			params.push(node);
 
-			return new JsNode(node,curJsNode);
+			return curJsNode;
+		},
+		allParam:function(){
+			var curJsNode = this;
+			var params = curJsNode.astObj.params;
+			return _.map(params,function(param){
+				return new JsNode(param,curJsNode);
+			})
+
 		},
 		append: _append,
 		prepend: _prepend
@@ -393,6 +405,8 @@ var methodFactory = (function(){
 			get:function(index){
 				var curJsNode = this;
 				var params = curJsNode.astObj.arguments;
+				index = parseInt(index);
+
 				if (index > params.length - 1) return [];
 
 				if (index < 0) index = params.length + index;
